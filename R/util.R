@@ -11,6 +11,12 @@ get_site_data <- function(site_number) {
     return(list(site_data = site_data, rainfall_data = rainfall_data))
 }
 
+#' Load the many sites along with rainfall data into a database in parallel.
+#' @param db_connection A connection to an initialised bomdata database.
+#' @param site_numbers A vector of site numbers to load. Sites that already exist within the database will be ignored.
+#' @param n_parallel The number of parallel workers to run to download sites. Only works in mclapply works on your
+#' machine.
+#' @param batch_size The number of sites to download before committing their data to the database.
 #' @export
 bomdata_load_many_sites <- function(db_connection, site_numbers, n_parallel = 8, batch_size = 40) {
     site_numbers <- strtoi(site_numbers)

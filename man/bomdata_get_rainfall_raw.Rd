@@ -2,11 +2,19 @@
 % Please edit documentation in R/rainfall.R
 \name{bomdata_get_rainfall_raw}
 \alias{bomdata_get_rainfall_raw}
-\title{Get the rainfall data for a site}
+\title{Get the rainfall data for a site. This is a dataframe with 4 columns, 'date', 'rainfall', 'days_measured' and
+'quality'.}
 \usage{
 bomdata_get_rainfall_raw(site_data, url = RAINFALL_URL)
 }
+\arguments{
+\item{site_data}{Site metadata (as a data frame row) retrieved via \code{bomdata_get_site} or
+\code{bomdata_get_site_raw}}
+
+\item{url}{The URL to retrieve the data from. The default should be correct; read the package source for details.}
+}
 \description{
-Get the rainfall data for a site
+Get the rainfall data for a site. This is a dataframe with 4 columns, 'date', 'rainfall', 'days_measured' and
+'quality'.
 }
 

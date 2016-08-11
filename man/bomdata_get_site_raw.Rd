@@ -2,11 +2,16 @@
 % Please edit documentation in R/site.R
 \name{bomdata_get_site_raw}
 \alias{bomdata_get_site_raw}
-\title{Get the site data (ie, metadata) from the BOM website}
+\title{Get the site data (ie, metadata) from the BOM website as a data.frame with a single row.}
 \usage{
 bomdata_get_site_raw(site_number, url = SITE_METADATA_URL)
 }
+\arguments{
+\item{site_number}{The site number to retrieve.}
+
+\item{url}{The URL to retrieve the data from. The default should be correct; read the package source for details.}
+}
 \description{
-Get the site data (ie, metadata) from the BOM website
+Get the site data (ie, metadata) from the BOM website as a data.frame with a single row.
 }
 

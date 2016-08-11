@@ -1,3 +1,5 @@
+#' Initialise a bomdata database. The database can have been initialised in the past, so it's safe to call this again.
+#' @param db_connection An RSQLite connection.
 #' @export
 bomdata_initialise <- function(db_connection) {
     futile.logger::flog.debug('Initialising the database')
