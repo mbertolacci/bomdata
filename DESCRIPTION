@@ -1,0 +1,18 @@
+Package: bomdata
+Title: What the Package Does (one line, title case)
+Version: 0.0.0.9000
+Authors@R: person("Michael", "Bertolacci", email = "m.bertolacci@gmail.com", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+Depends:
+    R (>= 3.2.2)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    DBI,
+    RSQLite,
+    futile.logger,
+    rvest,
+    xml2
+RoxygenNote: 5.0.1
+Suggests: testthat
