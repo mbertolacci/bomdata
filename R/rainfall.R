@@ -4,13 +4,15 @@ RAINFALL_URL <- paste0(
     '&p_c=%2$.f'
 )
 
+#' Get the rainfall data for a site.
+#'
 #' Get the rainfall data for a site. This is a dataframe with 4 columns, 'date', 'rainfall', 'days_measured' and
 #' 'quality'.
-#' @param site_data Site metadata (as a data frame row) retrieved via \code{bomdata_get_site} or
-#' \code{bomdata_get_site_raw}
+#' @param site_data Site metadata (as a data frame row) retrieved via \code{get_site} or
+#' \code{get_site_raw}
 #' @param url The URL to retrieve the data from. The default should be correct; read the package source for details.
 #' @export
-bomdata_get_rainfall_raw <- function(site_data, url = RAINFALL_URL) {
+get_rainfall_raw <- function(site_data, url = RAINFALL_URL) {
     rainfall_url <- sprintf(url, site_data$number, site_data$p_c)
 
     futile.logger::flog.debug('Downloading site rainfall zip from %s', rainfall_url, name = 'bomdata.rainfall')
@@ -50,17 +52,17 @@ bomdata_get_rainfall_raw <- function(site_data, url = RAINFALL_URL) {
 #' Load the rainfall data for a site into the database. The site must already exist in the database.
 #' @param db_connection The database connection to an initialised bomdata database.
 #' @param site_number The site number to load. Ignored if \code{site_data} is not null.
-#' @param site_data Site metadata retrieved via \code{bomdata_get_site} or \code{bomdata_get_site_raw}. Ignored if
+#' @param site_data Site metadata retrieved via \code{get_site} or \code{get_site_raw}. Ignored if
 #' \code{rainfall_data} is not null.
-#' @param rainfall_data A data frame of rainfall data retrieved using \code{bomdata_get_rainfall_raw}.
-#' @param ... Will be passed to \code{bomdata_get_rainfall_raw}
+#' @param rainfall_data A data frame of rainfall data retrieved using \code{get_rainfall_raw}.
+#' @param ... Will be passed to \code{get_rainfall_raw}
 #' @export
-bomdata_load_rainfall <- function(db_connection, site_number = NULL, site_data = NULL, rainfall_data = NULL, ...) {
+load_rainfall <- function(db_connection, site_number = NULL, site_data = NULL, rainfall_data = NULL, ...) {
     if (is.null(site_data)) {
-        site_data <- bomdata_get_site(db_connection, site_number)
+        site_data <- get_site(db_connection, site_number)
     }
     if (is.null(rainfall_data)) {
-        rainfall_data <- bomdata_get_rainfall_raw(site_data, ...)
+        rainfall_data <- get_rainfall_raw(site_data, ...)
     }
 
     rainfall_data$site_number <- site_data$number[1]

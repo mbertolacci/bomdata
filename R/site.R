@@ -10,7 +10,7 @@ SITE_METADATA_URL <- paste0(
 #' @param site_number The site number to retrieve.
 #' @param url The URL to retrieve the data from. The default should be correct; read the package source for details.
 #' @export
-bomdata_get_site_raw <- function(site_number, url = SITE_METADATA_URL) {
+get_site_raw <- function(site_number, url = SITE_METADATA_URL) {
     site_data_url <- sprintf(url, site_number)
 
     futile.logger::flog.debug('Downloading site data from %s', site_data_url, name = 'bomdata.site')
@@ -38,9 +38,11 @@ REGION_NAMES <- c('AUS', 'WA', 'SA', 'VIC', 'NSW', 'NT', 'QLD', 'TAS', 'ANT')
 REGION_LIST_URL <- 'http://www.bom.gov.au/climate/data/lists_by_element/alpha%1$s_136.txt'
 
 #' Get a vector of site numbers in a specified region.
+#'
+#' Get a vector of site numbers in a specified region.
 #' @param region_name One of 'AUS', 'WA', 'SA', 'VIC', 'NSW', 'NT', 'QLD', 'TAS', 'ANT'.
 #' @export
-bomdata_get_site_numbers_in_region <- function(region_name) {
+get_site_numbers_in_region <- function(region_name) {
     stopifnot(region_name %in% REGION_NAMES)
     site_list_url <- sprintf(REGION_LIST_URL, region_name)
     futile.logger::flog.debug('Downloading list of sites from %s', site_list_url, name = 'bomdata.site')
@@ -52,14 +54,16 @@ bomdata_get_site_numbers_in_region <- function(region_name) {
 }
 
 #' Retrieve and load site metadata into a database.
+#'
+#' Retrieve and load site metadata into a database.
 #' @param db_connection The database connection to an initialised bomdata database.
 #' @param site_number The site number to load. Ignored if \code{site_data} is not null.
-#' @param site_data Site metadata retrieved via \code{bomdata_get_site} or \code{bomdata_get_site_raw}.
-#' @param ... Passed to \code{bomdata_get_site_raw}.
+#' @param site_data Site metadata retrieved via \code{get_site} or \code{get_site_raw}.
+#' @param ... Passed to \code{get_site_raw}.
 #' @export
-bomdata_load_site <- function(db_connection, site_number = NULL, site_data = NULL, ...) {
+load_site <- function(db_connection, site_number = NULL, site_data = NULL, ...) {
     if (is.null(site_data)) {
-        site_data <- bomdata_get_site_raw(site_number, ...)
+        site_data <- get_site_raw(site_number, ...)
     }
 
     RSQLite::dbGetPreparedQuery(
@@ -81,10 +85,12 @@ bomdata_load_site <- function(db_connection, site_number = NULL, site_data = NUL
 }
 
 #' Gets the site metadata as a single-row data.frame from an existing database
+#'
+#' Gets the site metadata as a single-row data.frame from an existing database
 #' @param db_connection The database connection to an initialised bomdata database.
 #' @param site_number The site number to retrieve.
 #' @export
-bomdata_get_site <- function(db_connection, site_number) {
+get_site <- function(db_connection, site_number) {
     RSQLite::dbGetPreparedQuery(
         db_connection,
         '
