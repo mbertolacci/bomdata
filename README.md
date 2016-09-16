@@ -32,7 +32,7 @@ and then query it like so
         SELECT
             *
         FROM
-            bom_rainfall
+            bom_site
     ')
     print(head(site_data))
 
@@ -57,9 +57,17 @@ and now you will find its rainfall data in the database
 You can load the metadata and rainfall data for many sites at once by running
 
     bomdata::load_many_sites(db_connection, c(3003, 9031))
+    site_data <- DBI::dbGetQuery(db_connection, '
+        SELECT
+            *
+        FROM
+            bom_site
+    ')
+    print(head(site_data))
 
 A useful facility for listing sites is in the form of listing site numbers in a region, which can be done by running
 
     site_numbers <- bomdata::get_site_numbers_in_region('NSW')
+    print(head(site_numbers))
 
 The recognised regions are 'AUS', 'WA', 'SA', 'VIC', 'NSW', 'NT', 'QLD', 'TAS', and 'ANT'.
