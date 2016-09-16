@@ -60,6 +60,6 @@ You can load the metadata and rainfall data for many sites at once by running
 
 A useful facility for listing sites is in the form of listing site numbers in a region, which can be done by running
 
-    site_numbers <- get_site_numbers_in_region('NSW')
+    site_numbers <- bomdata::get_site_numbers_in_region('NSW')
 
 The recognised regions are 'AUS', 'WA', 'SA', 'VIC', 'NSW', 'NT', 'QLD', 'TAS', and 'ANT'.
