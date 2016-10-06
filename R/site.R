@@ -3,9 +3,6 @@ SITE_METADATA_URL <- paste0(
     '?p_display_type=ajaxStnListing&p_nccObsCode=136&p_stnNum=%1$s&p_radius=0.01'
 )
 
-# HACK(mike): can't find a way to use namespace:: syntax with an infix operator, so import it this way
-`%>%` <- rvest::`%>%`
-
 #' Get the site data (ie, metadata) from the BOM website as a data.frame with a single row.
 #' @param site_number The site number to retrieve.
 #' @param url The URL to retrieve the data from. The default should be correct; read the package source for details.
@@ -15,12 +12,12 @@ get_site_raw <- function(site_number, url = SITE_METADATA_URL) {
 
     futile.logger::flog.debug('Downloading site data from %s', site_data_url, name = 'bomdata.site')
     site_meta_page <- xml2::read_html(site_data_url)
-    tables <- site_meta_page %>% rvest::html_node('table')
+    tables <- rvest::html_node(site_meta_page, 'table')
     if (is.na(xml2::xml_type(tables))) {
         futile.logger::flog.warn('No table present on %s', site_data_url, name = 'bomdata.site')
         return(NULL)
     }
-    site_meta <- tables %>% rvest::html_table(fill = TRUE)
+    site_meta <- rvest::html_table(tables, fill = TRUE)
 
     # Ensure we get only the chosen site, and pick the right columns
     site_meta <- site_meta[site_meta$Station == site_number, c(2, 3, 4, 5, 6, 11)]

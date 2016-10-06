@@ -1,3 +1,6 @@
+# HACK(mgnb): to allow tests to pass when using Rscript
+library(methods)
+
 context('rainfall')
 
 futile.logger::flog.threshold(futile.logger::ERROR, name = 'bomdata.rainfall')
