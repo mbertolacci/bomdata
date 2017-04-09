@@ -10,12 +10,14 @@ load_many_sites(db_connection, site_numbers, n_parallel = 8,
 \arguments{
 \item{db_connection}{A connection to an initialised bomdata database.}
 
-\item{site_numbers}{A vector of site numbers to load. Sites that already exist within the database will be ignored.}
+\item{site_numbers}{A vector of site numbers to load. Sites that already
+exist within the database will be ignored.}
 
-\item{n_parallel}{The number of parallel workers to run to download sites. Only works in mclapply works on your
-machine.}
+\item{n_parallel}{The number of parallel workers to run to download sites.
+Only works in mclapply works on your machine.}
 
-\item{batch_size}{The number of sites to download before committing their data to the database.}
+\item{batch_size}{The number of sites to download before committing their
+data to the database.}
 }
 \description{
 Load many sites along with rainfall data into a database in parallel.

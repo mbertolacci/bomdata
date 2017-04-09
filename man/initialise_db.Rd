@@ -10,6 +10,7 @@ initialise_db(db_connection)
 \item{db_connection}{An RSQLite connection.}
 }
 \description{
-Initialises a bomdata database. The database can have been initialised in the past, so it's safe to call this again.
+Initialises a bomdata database. The database can have been initialised in
+the past, so it's safe to call this again.
 }
 

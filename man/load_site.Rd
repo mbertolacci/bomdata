@@ -7,11 +7,14 @@
 load_site(db_connection, site_number = NULL, site_data = NULL, ...)
 }
 \arguments{
-\item{db_connection}{The database connection to an initialised bomdata database.}
+\item{db_connection}{The database connection to an initialised bomdata
+database.}
 
-\item{site_number}{The site number to load. Ignored if \code{site_data} is not null.}
+\item{site_number}{The site number to load. Ignored if \code{site_data} is
+not null.}
 
-\item{site_data}{Site metadata retrieved via \code{get_site} or \code{get_site_raw}.}
+\item{site_data}{Site metadata retrieved via \code{get_site} or
+\code{get_site_raw}.}
 
 \item{...}{Passed to \code{get_site_raw}.}
 }

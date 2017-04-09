@@ -1,8 +1,8 @@
 Package: bomdata
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
+Title: Data from the Australian Bureau of Meteorology
+Version: 0.0.1
 Authors@R: person("Michael", "Bertolacci", email = "m.bertolacci@gmail.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: Provides functions to download data from the Australian Bureau of Meteorology (BOM). Please note, this package and the package author are not affiliated with BOM in any way.
 Depends:
     R (>= 3.2.2)
 License: MIT + file LICENSE

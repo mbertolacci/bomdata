@@ -7,7 +7,8 @@
 get_site(db_connection, site_number)
 }
 \arguments{
-\item{db_connection}{The database connection to an initialised bomdata database.}
+\item{db_connection}{The database connection to an initialised bomdata
+database.}
 
 \item{site_number}{The site number to retrieve.}
 }

@@ -2,24 +2,29 @@
 % Please edit documentation in R/rainfall.R
 \name{load_rainfall}
 \alias{load_rainfall}
-\title{Load the rainfall data for a site into the database. The site must already exist in the database.}
+\title{Load the rainfall data for a site into the database. The site must already
+exist in the database.}
 \usage{
 load_rainfall(db_connection, site_number = NULL, site_data = NULL,
   rainfall_data = NULL, ...)
 }
 \arguments{
-\item{db_connection}{The database connection to an initialised bomdata database.}
+\item{db_connection}{The database connection to an initialised bomdata
+database.}
 
-\item{site_number}{The site number to load. Ignored if \code{site_data} is not null.}
+\item{site_number}{The site number to load. Ignored if \code{site_data} is
+not null.}
 
-\item{site_data}{Site metadata retrieved via \code{get_site} or \code{get_site_raw}. Ignored if
-\code{rainfall_data} is not null.}
+\item{site_data}{Site metadata retrieved via \code{get_site} or
+\code{get_site_raw}. Ignored if \code{rainfall_data} is not null.}
 
-\item{rainfall_data}{A data frame of rainfall data retrieved using \code{get_rainfall_raw}.}
+\item{rainfall_data}{A data frame of rainfall data retrieved using
+\code{get_rainfall_raw}.}
 
 \item{...}{Will be passed to \code{get_rainfall_raw}}
 }
 \description{
-Load the rainfall data for a site into the database. The site must already exist in the database.
+Load the rainfall data for a site into the database. The site must already
+exist in the database.
 }
 
