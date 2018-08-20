@@ -24,7 +24,7 @@ This will give you a blank database, ready to be loaded.
 
 You can load the metadata into the database for a single site like so
 
-    bomdata::load_site(db_connection, site_number = 3003)
+    bomdata::add_site(db_connection, site_number = 3003)
 
 and then query it like so
 
@@ -38,7 +38,7 @@ and then query it like so
 
 You can then get rainfall data by running
 
-    bomdata::load_rainfall(db_connection, site_number = 3003)
+    bomdata::add_rainfall(db_connection, site_number = 3003)
 
 and now you will find its rainfall data in the database
 
@@ -56,7 +56,7 @@ and now you will find its rainfall data in the database
 
 You can load the metadata and rainfall data for many sites at once by running
 
-    bomdata::load_many_sites(db_connection, c(3003, 9031))
+    bomdata::add_many_sites(db_connection, c(3003, 9031))
     site_data <- DBI::dbGetQuery(db_connection, '
         SELECT
             *

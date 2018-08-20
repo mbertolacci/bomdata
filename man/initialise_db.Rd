@@ -13,4 +13,3 @@ initialise_db(db_connection)
 Initialises a bomdata database. The database can have been initialised in
 the past, so it's safe to call this again.
 }
-

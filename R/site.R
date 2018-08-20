@@ -9,7 +9,7 @@ SITE_METADATA_URL <- paste0(
 #' @param url The URL to retrieve the data from. The default should be correct;
 #' read the package source for details.
 #' @export
-get_site_raw <- function(site_number, url = SITE_METADATA_URL) {
+download_site <- function(site_number, url = SITE_METADATA_URL) {
   site_data_url <- sprintf(url, site_number)
 
   futile.logger::flog.debug(
@@ -80,13 +80,13 @@ get_site_numbers_in_region <- function(region_name) {
 #' @param site_number The site number to load. Ignored if \code{site_data} is
 #' not null.
 #' @param site_data Site metadata retrieved via \code{get_site} or
-#' \code{get_site_raw}.
-#' @param ... Passed to \code{get_site_raw}.
+#' \code{download_site}.
+#' @param ... Passed to \code{download_site}.
 #' @export
-load_site <- function(db_connection, site_number = NULL, site_data = NULL,
-                      ...) {
+add_site <- function(db_connection, site_number = NULL, site_data = NULL,
+                     ...) {
   if (is.null(site_data)) {
-    site_data <- get_site_raw(site_number, ...)
+    site_data <- download_site(site_number, ...)
   }
 
   DBI::dbExecute(

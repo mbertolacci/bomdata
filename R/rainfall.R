@@ -9,11 +9,11 @@ RAINFALL_URL <- paste0(
 #' Get the rainfall data for a site. This is a dataframe with 4 columns, 'date',
 #' 'rainfall', 'days_measured' and quality'.
 #' @param site_data Site metadata (as a data frame row) retrieved via
-#' \code{get_site} or \code{get_site_raw}
+#' \code{get_site} or \code{download_site}
 #' @param url The URL to retrieve the data from. The default should be correct;
 #' read the package source for details.
 #' @export
-get_rainfall_raw <- function(site_data, url = RAINFALL_URL) {
+download_rainfall <- function(site_data, url = RAINFALL_URL) {
   rainfall_url <- sprintf(url, site_data$number, site_data$p_c)
 
   futile.logger::flog.debug(
@@ -63,18 +63,18 @@ get_rainfall_raw <- function(site_data, url = RAINFALL_URL) {
 #' @param site_number The site number to load. Ignored if \code{site_data} is
 #' not null.
 #' @param site_data Site metadata retrieved via \code{get_site} or
-#' \code{get_site_raw}. Ignored if \code{rainfall_data} is not null.
+#' \code{download_site}. Ignored if \code{rainfall_data} is not null.
 #' @param rainfall_data A data frame of rainfall data retrieved using
-#' \code{get_rainfall_raw}.
-#' @param ... Will be passed to \code{get_rainfall_raw}
+#' \code{download_rainfall}.
+#' @param ... Will be passed to \code{download_rainfall}
 #' @export
-load_rainfall <- function(db_connection, site_number = NULL, site_data = NULL,
-                          rainfall_data = NULL, ...) {
+add_rainfall <- function(db_connection, site_number = NULL, site_data = NULL,
+                         rainfall_data = NULL, ...) {
   if (is.null(site_data)) {
     site_data <- get_site(db_connection, site_number)
   }
   if (is.null(rainfall_data)) {
-    rainfall_data <- get_rainfall_raw(site_data, ...)
+    rainfall_data <- download_rainfall(site_data, ...)
   }
 
   rainfall_data$site_number <- site_data$number[1]

@@ -2,11 +2,11 @@ get_site_data <- function(site_number) {
   futile.logger::flog.debug(
     'Getting data for %d', site_number, name = 'bomdata.util'
   )
-  site_data <- get_site_raw(site_number)
+  site_data <- download_site(site_number)
   if (is.null(site_data)) {
     return(NULL)
   }
-  rainfall_data <- get_rainfall_raw(site_data)
+  rainfall_data <- download_rainfall(site_data)
   if (is.null(rainfall_data)) {
     return(NULL)
   }
@@ -24,8 +24,8 @@ get_site_data <- function(site_number) {
 #' @param batch_size The number of sites to download before committing their
 #' data to the database.
 #' @export
-load_many_sites <- function(db_connection, site_numbers, n_parallel = 8,
-                            batch_size = 40) {
+add_many_sites <- function(db_connection, site_numbers, n_parallel = 8,
+                           batch_size = 40) {
   site_numbers <- strtoi(site_numbers)
 
   # Exclude site numbers that already exist
@@ -50,8 +50,8 @@ load_many_sites <- function(db_connection, site_numbers, n_parallel = 8,
         next
       }
       DBI::dbBegin(db_connection)
-      load_site(db_connection, site_data = site$site_data)
-      load_rainfall(
+      add_site(db_connection, site_data = site$site_data)
+      add_rainfall(
         db_connection,
         site_data = site$site_data,
         rainfall_data = site$rainfall_data
@@ -72,15 +72,16 @@ HIGH_QUALITY_RAINFALL_URL <- (
 #' @param tar_filename Disk location of the an existing tar file
 #' @param url Location to download tar file from, if tar_filename is NULL
 #' @export
-load_high_quality_rainfall <- function(db_connection, tar_filename = NULL,
-                                       url = HIGH_QUALITY_RAINFALL_URL) {
+add_high_quality_rainfall <- function(db_connection, tar_filename = NULL,
+                                      url = HIGH_QUALITY_RAINFALL_URL,
+                                      quiet = FALSE) {
   if (is.null(tar_filename)) {
     futile.logger::flog.debug(
       'Downloading high quality rainfall database from %s', url,
       name = 'bomdata.util'
     )
     tar_filename <- tempfile()
-    utils::download.file(url, tar_filename, quiet = TRUE)
+    utils::download.file(url, tar_filename, quiet = quiet)
   }
 
   output_directory <- file.path(tempdir(), 'bomdata_hqdaily')

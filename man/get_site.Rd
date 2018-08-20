@@ -15,4 +15,3 @@ database.}
 \description{
 Gets the site metadata as a single-row data.frame from an existing database
 }
-

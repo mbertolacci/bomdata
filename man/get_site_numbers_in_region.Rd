@@ -13,4 +13,3 @@ get_site_numbers_in_region(region_name)
 \description{
 Get a vector of site numbers in a specified region.
 }
-

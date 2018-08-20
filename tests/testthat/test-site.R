@@ -5,12 +5,12 @@ context('site')
 
 futile.logger::flog.threshold(futile.logger::ERROR, name = 'bomdata.site')
 
-## get_site_raw
+## download_site
 
-test_that('get_site_raw returns data', {
+test_that('download_site returns data', {
   # NOTE(mgnb): this is Broome Airport (3003). Just check that it returns
   # something.
-  site_data <- get_site_raw(3003)
+  site_data <- download_site(3003)
 
   # Should get the right site
   expect_equal(site_data[1, 'number'], 3003)
@@ -19,18 +19,18 @@ test_that('get_site_raw returns data', {
   expect_false(is.na(site_data[1, 'p_c']))
 })
 
-test_that('get_site_raw returns nothing for sites with no data', {
+test_that('download_site returns nothing for sites with no data', {
   # NOTE(mgnb): this is Rabaul (200340).
-  site_data <- get_site_raw(200340)
+  site_data <- download_site(200340)
   expect_null(site_data)
 })
 
 test_that(
-  'get_site_raw returns nothing for sites that are not in the return table', {
+  'download_site returns nothing for sites that are not in the return table', {
     # NOTE(mgnb): this is Coldsteam Comparison (86320). I'm not sure what the
     # deal is with these sites. They are very close to other existing sites (in
     # this case Coldstream (86383)), but have no data.
-    site_data <- get_site_raw(86320)
+    site_data <- download_site(86320)
     expect_null(site_data)
   }
 )
@@ -59,20 +59,20 @@ run_load_site_test <- function(load_site_fn) {
 test_that(
   'load_site, site_number variant',
   run_load_site_test(function(db_connection) {
-    load_site(db_connection, site_number = 3003)
+    add_site(db_connection, site_number = 3003)
   })
 )
 
 test_that(
   'load_site, site_data variant',
   run_load_site_test(function(db_connection) {
-    load_site(db_connection, site_data = get_site_raw(3003))
+    add_site(db_connection, site_data = download_site(3003))
   })
 )
 
 ## get_site
 test_that('get_site', with_db(function(db_connection) {
-  load_site(db_connection, 3003)
+  add_site(db_connection, 3003)
   site_data <- get_site(db_connection, 3003)
   expect_equal(site_data[1, 'number'], 3003)
 }))

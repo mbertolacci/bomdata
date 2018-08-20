@@ -5,12 +5,12 @@ context('rainfall')
 
 futile.logger::flog.threshold(futile.logger::ERROR, name = 'bomdata.rainfall')
 
-## get_site_raw
+## download_site
 
-test_that('get_rainfall_raw gets data', {
+test_that('download_rainfall gets data', {
   # NOTE(mgnb): this is Broome Airport (3003). Just check that it returns
   # something.
-  rainfall_data <- get_rainfall_raw(get_site_raw(3003))
+  rainfall_data <- download_rainfall(download_site(3003))
 
   expect_equal(ncol(rainfall_data), 4)
   # True as of 2016/08/08 (I suppose it could go down if they withdraw data,
@@ -19,9 +19,9 @@ test_that('get_rainfall_raw gets data', {
   expect_is(rainfall_data[, 'rainfall'], 'numeric')
 })
 
-test_that('get_rainfall_raw returns NULL when there is no data', {
+test_that('download_rainfall returns NULL when there is no data', {
   # NOTE(mgnb): this site, HYGAIT TM (40780), appears to have no data
-  expect_null(get_rainfall_raw(get_site_raw(40780)))
+  expect_null(download_rainfall(download_site(40780)))
 })
 
 ## load_rainfall
@@ -29,7 +29,7 @@ test_that('get_rainfall_raw returns NULL when there is no data', {
 run_site_test <- function(load_site_fn) {
   with_db(function(db_connection) {
     # Load site
-    load_site(db_connection, 3003)
+    add_site(db_connection, 3003)
     # Load rainfall into the database
     expect_true(load_site_fn(db_connection))
 
@@ -51,24 +51,24 @@ run_site_test <- function(load_site_fn) {
 test_that(
   'load_rainfall, site_number variant',
   run_site_test(function(db_connection) {
-    load_rainfall(db_connection, site_number = 3003)
+    add_rainfall(db_connection, site_number = 3003)
   })
 )
 
 test_that(
   'load_rainfall, site_data variant',
   run_site_test(function(db_connection) {
-    load_rainfall(db_connection, site_data = get_site_raw(3003))
+    add_rainfall(db_connection, site_data = download_site(3003))
   })
 )
 
 test_that(
   'load_rainfall, rainfall_data variant',
   run_site_test(function(db_connection) {
-    rainfall_data <- get_rainfall_raw(get_site_raw(3003))
-    load_rainfall(
+    rainfall_data <- download_rainfall(download_site(3003))
+    add_rainfall(
       db_connection,
-      site_data = get_site_raw(3003),
+      site_data = download_site(3003),
       rainfall_data = rainfall_data
     )
   })
