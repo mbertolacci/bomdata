@@ -89,7 +89,7 @@ load_site <- function(db_connection, site_number = NULL, site_data = NULL,
     site_data <- get_site_raw(site_number, ...)
   }
 
-  RSQLite::dbGetPreparedQuery(
+  DBI::dbExecute(
     db_connection,
     '
       INSERT OR REPLACE INTO bom_site VALUES (
@@ -115,7 +115,7 @@ load_site <- function(db_connection, site_number = NULL, site_data = NULL,
 #' @param site_number The site number to retrieve.
 #' @export
 get_site <- function(db_connection, site_number) {
-  RSQLite::dbGetPreparedQuery(
+  DBI::dbGetQuery(
     db_connection,
     '
       SELECT

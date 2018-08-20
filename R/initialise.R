@@ -7,7 +7,7 @@
 initialise_db <- function(db_connection) {
   futile.logger::flog.debug('Initialising the database')
 
-  DBI::dbGetQuery(db_connection, '
+  DBI::dbExecute(db_connection, '
     CREATE TABLE IF NOT EXISTS bom_site(
       number INTEGER,  -- The site number
       name TEXT,       -- The full name of the site
@@ -18,14 +18,14 @@ initialise_db <- function(db_connection) {
                        -- download data
     );
   ')
-  DBI::dbGetQuery(db_connection, '
+  DBI::dbExecute(db_connection, '
     CREATE UNIQUE INDEX IF NOT EXISTS
       bom_site_unique_number
     ON
       bom_site(number);
   ')
 
-  DBI::dbGetQuery(db_connection, '
+  DBI::dbExecute(db_connection, '
     CREATE TABLE IF NOT EXISTS bom_rainfall(
       site_number INTEGER,    -- The site_number of the corresponding
                               -- bom_site row
@@ -40,7 +40,7 @@ initialise_db <- function(db_connection) {
       FOREIGN KEY(site_number) REFERENCES bom_site(number)
     );
   ')
-  DBI::dbGetQuery(db_connection, '
+  DBI::dbExecute(db_connection, '
     CREATE UNIQUE INDEX IF NOT EXISTS
       bom_rainfall_unique_site_date
     ON

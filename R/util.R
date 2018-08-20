@@ -96,7 +96,7 @@ load_high_quality_rainfall <- function(db_connection, tar_filename = NULL,
   colnames(site_data) <- c(
     'number', 'latitude', 'longitude', 'elevation', 'name', 'p_c'
   )
-  RSQLite::dbGetPreparedQuery(
+  DBI::dbExecute(
     db_connection,
     '
       INSERT OR REPLACE INTO bom_site VALUES (

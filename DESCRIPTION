@@ -9,8 +9,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    DBI,
-    RSQLite,
+    DBI (>= 1.0.0),
+    RSQLite (>= 2.1.1),
     futile.logger,
     rvest,
     xml2
