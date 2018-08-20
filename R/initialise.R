@@ -46,4 +46,6 @@ initialise_db <- function(db_connection) {
     ON
       bom_rainfall(site_number, date);
   ')
+
+  invisible(NULL)
 }
