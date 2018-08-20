@@ -5,13 +5,13 @@
 \title{Get the site data (ie, metadata) from the BOM website as a data.frame with a
 single row.}
 \usage{
-download_site(site_number, url = SITE_METADATA_URL)
+download_site(site_numbers, type = c("rainfall", "max_temperature"))
 }
 \arguments{
-\item{site_number}{The site number to retrieve.}
+\item{site_numbers}{The site number to retrieve.}
 
-\item{url}{The URL to retrieve the data from. The default should be correct;
-read the package source for details.}
+\item{type}{Which observation type to download metadata for. If the site has
+no historical data for this type, returns a data frame with zero rows.}
 }
 \description{
 Get the site data (ie, metadata) from the BOM website as a data.frame with a

@@ -1,6 +1,3 @@
-# HACK(mgnb): to allow tests to pass when using Rscript
-library(methods)
-
 context('site')
 
 futile.logger::flog.threshold(futile.logger::ERROR, name = 'bomdata.site')
@@ -17,12 +14,15 @@ test_that('download_site returns data', {
 
   # Should successfully extract the p_c number
   expect_false(is.na(site_data[1, 'p_c']))
+
+  # Should have the right dimensions
+  expect_equal(dim(site_data), c(1, 7))
 })
 
 test_that('download_site returns nothing for sites with no data', {
   # NOTE(mgnb): this is Rabaul (200340).
   site_data <- download_site(200340)
-  expect_null(site_data)
+  expect_equal(dim(site_data), c(0, 7))
 })
 
 test_that(
@@ -31,7 +31,7 @@ test_that(
     # deal is with these sites. They are very close to other existing sites (in
     # this case Coldstream (86383)), but have no data.
     site_data <- download_site(86320)
-    expect_null(site_data)
+    expect_equal(dim(site_data), c(0, 7))
   }
 )
 
@@ -46,13 +46,16 @@ test_that('get_site_numbers_in_region', {
 
 ## load_site
 
-run_load_site_test <- function(load_site_fn) {
+run_load_site_test <- function(load_site_fn, should_have_p_c) {
   with_db(function(db_connection) {
     # Load into the database
     expect_true(load_site_fn(db_connection))
     # Retrieve from the database
     site_data <- get_site(db_connection, 3003)
     expect_equal(site_data[1, 'number'], 3003)
+
+    p_c_length <- length(.get_site_p_c(db_connection, site_number = 3003))
+    expect_equal(p_c_length, 1)
   })
 }
 

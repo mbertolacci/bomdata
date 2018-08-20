@@ -4,11 +4,14 @@
 \alias{get_site_numbers_in_region}
 \title{Get a vector of site numbers in a specified region.}
 \usage{
-get_site_numbers_in_region(region_name)
+get_site_numbers_in_region(region_name = c("AUS", "WA", "SA", "VIC", "NSW",
+  "NT", "QLD", "TAS", "ANT"), type = c("rainfall", "max_temperature"))
 }
 \arguments{
 \item{region_name}{One of 'AUS', 'WA', 'SA', 'VIC', 'NSW', 'NT', 'QLD',
 'TAS', 'ANT'.}
+
+\item{type}{The observation for which to list sites}
 }
 \description{
 Get a vector of site numbers in a specified region.

@@ -5,7 +5,7 @@
 #' @param db_connection An RSQLite connection.
 #' @export
 initialise_db <- function(db_connection) {
-  futile.logger::flog.debug('Initialising the database')
+  flog.debug('Initialising the database')
 
   DBI::dbExecute(db_connection, '
     CREATE TABLE IF NOT EXISTS bom_site(
@@ -13,9 +13,7 @@ initialise_db <- function(db_connection) {
       name TEXT,       -- The full name of the site
       latitude REAL,   -- The latitude in degrees
       longitude REAL,  -- The longitude in degrees
-      elevation REAL,  -- Elevation in metres
-      p_c INTEGER      -- The last p_c value returned by the BOM, used to
-                       -- download data
+      elevation REAL   -- Elevation in metres
     );
   ')
   DBI::dbExecute(db_connection, '
@@ -26,26 +24,42 @@ initialise_db <- function(db_connection) {
   ')
 
   DBI::dbExecute(db_connection, '
-    CREATE TABLE IF NOT EXISTS bom_rainfall(
-      site_number INTEGER,    -- The site_number of the corresponding
-                              -- bom_site row
-      date TEXT,              -- A text date for this observation
-      rainfall REAL,          -- The rainfall value for the day in mm
-                              -- (may be blank)
-      days_measured INTEGER,  -- The number of days the measured rainfall
-                              -- corresponds to (NA for days with NA
-                              -- or 0 rainfall)
-      quality INTEGER,        -- Whether the value has been quality
-                              -- checked by the BOM
+    CREATE TABLE IF NOT EXISTS bom_site_p_c(
+      site_number INTEGER,  -- The site number
+      type TEXT,            -- The observation type (rainfall, etc)
+      p_c INTEGER,          -- The value of p_c
       FOREIGN KEY(site_number) REFERENCES bom_site(number)
     );
   ')
   DBI::dbExecute(db_connection, '
     CREATE UNIQUE INDEX IF NOT EXISTS
-      bom_rainfall_unique_site_date
+      bom_site_p_c_unique_number_code
     ON
-      bom_rainfall(site_number, date);
+      bom_site_p_c(site_number, type);
   ')
+
+  for (type in c('rainfall', 'max_temperature')) {
+    DBI::dbExecute(db_connection, sprintf('
+      CREATE TABLE IF NOT EXISTS bom_%1$s(
+        site_number INTEGER,    -- The site_number of the corresponding
+                                -- bom_site row
+        date TEXT,              -- A text date for this observation
+        %1$s REAL,              -- The value for the day
+                                -- (may be blank)
+        days_measured INTEGER,  -- The number of days the value corresponds to
+                                -- (NA for days with NA or 0 rainfall)
+        quality INTEGER,        -- Whether the value has been quality
+                                -- checked by the BOM
+        FOREIGN KEY(site_number) REFERENCES bom_site(number)
+      );
+    ', type))
+    DBI::dbExecute(db_connection, sprintf('
+      CREATE UNIQUE INDEX IF NOT EXISTS
+        bom_%1$s_unique_site_date
+      ON
+        bom_%1$s(site_number, date);
+    ', type))
+  }
 
   invisible(NULL)
 }

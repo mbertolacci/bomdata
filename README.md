@@ -36,9 +36,9 @@ and then query it like so
     ')
     print(head(site_data))
 
-You can then get rainfall data by running
+You can then add rainfall data by running
 
-    bomdata::add_rainfall(db_connection, site_number = 3003)
+    bomdata::add_daily_climate_data(db_connection, 3003, type = 'rainfall')
 
 and now you will find its rainfall data in the database
 

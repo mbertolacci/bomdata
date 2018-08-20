@@ -1,53 +1,73 @@
 SITE_METADATA_URL <- paste0(
   'http://www.bom.gov.au/jsp/ncc/cdio/weatherStationDirectory/d',
-  '?p_display_type=ajaxStnListing&p_nccObsCode=136&p_stnNum=%1$s&p_radius=0.01'
+  '?p_display_type=ajaxStnListing&p_nccObsCode=%2$d&p_stnNum=%1$s&p_radius=0.01'
+)
+EMPTY_SITE_DATA_FRAME <- data.frame(
+  number = numeric(),
+  name = character(),
+  latitude = numeric(),
+  longitude = numeric(),
+  elevation = numeric(),
+  p_c = numeric(),
+  type = character()
 )
 
 #' Get the site data (ie, metadata) from the BOM website as a data.frame with a
 #' single row.
-#' @param site_number The site number to retrieve.
-#' @param url The URL to retrieve the data from. The default should be correct;
-#' read the package source for details.
+#' @param site_numbers The site number to retrieve.
+#' @param type Which observation type to download metadata for. If the site has
+#' no historical data for this type, returns a data frame with zero rows.
 #' @export
-download_site <- function(site_number, url = SITE_METADATA_URL) {
-  site_data_url <- sprintf(url, site_number)
+download_site <- function(
+  site_numbers,
+  type = c('rainfall', 'max_temperature')
+) {
+  type <- match.arg(type)
 
-  futile.logger::flog.debug(
-    'Downloading site data from %s', site_data_url, name = 'bomdata.site'
-  )
-  site_meta_page <- xml2::read_html(site_data_url)
-  tables <- rvest::html_node(site_meta_page, 'table')
-  if (is.na(xml2::xml_type(tables))) {
-    futile.logger::flog.warn(
-      'No table present on %s', site_data_url, name = 'bomdata.site'
+  do.call(rbind, lapply(site_numbers, function(site_number) {
+    site_data_url <- sprintf(
+      SITE_METADATA_URL,
+      site_number,
+      .get_ncc_obs_code(type)
     )
-    return(NULL)
-  }
-  site_meta <- rvest::html_table(tables, fill = TRUE)
 
-  # Ensure we get only the chosen site, and pick the right columns
-  site_meta <- site_meta[
-    site_meta$Station == site_number,
-    c(2, 3, 4, 5, 6, 11)
-  ]
-  if (nrow(site_meta) == 0) {
-    futile.logger::flog.warn(
-      'Site %s not present on %s', site_number, site_data_url,
-      name = 'bomdata.site'
+    flog.debug(
+      'Downloading site data from %s', site_data_url, name = 'bomdata.site'
     )
-    return(NULL)
-  }
-  site_meta[1, 1] <- site_number
-  colnames(site_meta) <- c(
-    'number', 'name', 'latitude', 'longitude', 'elevation', 'p_c'
-  )
+    site_meta_page <- xml2::read_html(site_data_url)
+    tables <- rvest::html_node(site_meta_page, 'table')
+    if (is.na(xml2::xml_type(tables))) {
+      futile.logger::flog.warn(
+        'No table present on %s', site_data_url, name = 'bomdata.site'
+      )
+      return(EMPTY_SITE_DATA_FRAME)
+    }
+    site_meta <- rvest::html_table(tables, fill = TRUE)
 
-  return(site_meta)
+    # Ensure we get only the chosen site, and pick the right columns
+    site_meta <- site_meta[
+      site_meta$Station == site_number,
+      c(2, 3, 4, 5, 6, 11)
+    ]
+    if (nrow(site_meta) == 0) {
+      futile.logger::flog.warn(
+        'Site %s not present on %s', site_number, site_data_url,
+        name = 'bomdata.site'
+      )
+      return(EMPTY_SITE_DATA_FRAME)
+    }
+    site_meta[1, 1] <- site_number
+    colnames(site_meta) <- c(
+      'number', 'name', 'latitude', 'longitude', 'elevation', 'p_c'
+    )
+    site_meta$type <- type
+
+    site_meta
+  }))
 }
 
-REGION_NAMES <- c('AUS', 'WA', 'SA', 'VIC', 'NSW', 'NT', 'QLD', 'TAS', 'ANT')
 REGION_LIST_URL <- (
-  'http://www.bom.gov.au/climate/data/lists_by_element/alpha%1$s_136.txt'
+  'http://www.bom.gov.au/climate/data/lists_by_element/alpha%1$s_%2$d.txt'
 )
 
 #' Get a vector of site numbers in a specified region.
@@ -55,11 +75,20 @@ REGION_LIST_URL <- (
 #' Get a vector of site numbers in a specified region.
 #' @param region_name One of 'AUS', 'WA', 'SA', 'VIC', 'NSW', 'NT', 'QLD',
 #' 'TAS', 'ANT'.
+#' @param type The observation for which to list sites
 #' @export
-get_site_numbers_in_region <- function(region_name) {
-  stopifnot(region_name %in% REGION_NAMES)
-  site_list_url <- sprintf(REGION_LIST_URL, region_name)
-  futile.logger::flog.debug(
+get_site_numbers_in_region <- function(
+  region_name = c('AUS', 'WA', 'SA', 'VIC', 'NSW', 'NT', 'QLD', 'TAS', 'ANT'),
+  type = c('rainfall', 'max_temperature')
+) {
+  region_name <- match.arg(region_name)
+  type <- match.arg(type)
+  site_list_url <- sprintf(
+    REGION_LIST_URL,
+    region_name,
+    .get_ncc_obs_code(type)
+  )
+  flog.debug(
     'Downloading list of sites from %s', site_list_url, name = 'bomdata.site'
   )
   lines <- readLines(site_list_url)
@@ -79,13 +108,13 @@ get_site_numbers_in_region <- function(region_name) {
 #' database.
 #' @param site_number The site number to load. Ignored if \code{site_data} is
 #' not null.
-#' @param site_data Site metadata retrieved via \code{get_site} or
-#' \code{download_site}.
+#' @param site_data Site metadata retrieved via \code{download_site}.
 #' @param ... Passed to \code{download_site}.
 #' @export
-add_site <- function(db_connection, site_number = NULL, site_data = NULL,
-                     ...) {
-  if (is.null(site_data)) {
+add_site <- function(
+  db_connection, site_number = NULL, site_data = NULL, ...
+) {
+  if (missing(site_data)) {
     site_data <- download_site(site_number, ...)
   }
 
@@ -97,11 +126,27 @@ add_site <- function(db_connection, site_number = NULL, site_data = NULL,
         :name,
         :latitude,
         :longitude,
-        :elevation,
+        :elevation
+      );
+    ',
+    site_data[, c('number', 'name', 'latitude', 'longitude', 'elevation')]
+  )
+
+  DBI::dbExecute(
+    db_connection,
+    '
+      INSERT OR REPLACE INTO bom_site_p_c VALUES (
+        :site_number,
+        :type,
         :p_c
       );
     ',
-    site_data
+    data.frame(
+      site_number = site_data$number,
+      type = site_data$type,
+      p_c = site_data$p_c,
+      stringsAsFactors = FALSE
+    )
   )
 
   return(TRUE)
@@ -127,4 +172,23 @@ get_site <- function(db_connection, site_number) {
     ',
     data.frame(number = site_number)
   )
+}
+
+.get_site_p_c <- function(
+  db_connection, site_number, type = c('rainfall', 'max_temperature')
+) {
+  type <- match.arg(type)
+  DBI::dbGetQuery(
+    db_connection,
+    '
+      SELECT
+        p_c
+      FROM
+        bom_site_p_c
+      WHERE
+        site_number = :site_number
+        AND type = :type
+    ',
+    data.frame(site_number = site_number, type = type, stringsAsFactors = FALSE)
+  )[, 1]
 }

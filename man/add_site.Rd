@@ -13,8 +13,7 @@ database.}
 \item{site_number}{The site number to load. Ignored if \code{site_data} is
 not null.}
 
-\item{site_data}{Site metadata retrieved via \code{get_site} or
-\code{download_site}.}
+\item{site_data}{Site metadata retrieved via \code{download_site}.}
 
 \item{...}{Passed to \code{download_site}.}
 }
