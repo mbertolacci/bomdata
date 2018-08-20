@@ -13,6 +13,8 @@ add_high_quality_rainfall(db_connection, tar_filename = NULL,
 \item{tar_filename}{Disk location of the an existing tar file}
 
 \item{url}{Location to download tar file from, if tar_filename is NULL}
+
+\item{quiet}{Whether to show download progress}
 }
 \description{
 Load the high quality daily rainfall database.

@@ -71,6 +71,7 @@ HIGH_QUALITY_RAINFALL_URL <- (
 #' @param db_connection A connection to an initialised bomdata database.
 #' @param tar_filename Disk location of the an existing tar file
 #' @param url Location to download tar file from, if tar_filename is NULL
+#' @param quiet Whether to show download progress
 #' @export
 add_high_quality_rainfall <- function(db_connection, tar_filename = NULL,
                                       url = HIGH_QUALITY_RAINFALL_URL,
