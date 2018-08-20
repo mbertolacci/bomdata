@@ -90,7 +90,8 @@ load_high_quality_rainfall <- function(db_connection, tar_filename = NULL,
 
   site_data <- utils::read.fwf(
     file.path(output_directory, 'HQDR_stations.txt'),
-    widths = c(7, 7, 7, 7, 200)
+    widths = c(7, 7, 7, 7, 200),
+    stringsAsFactors = FALSE
   )
   site_data$p_c <- -1
   colnames(site_data) <- c(
@@ -128,7 +129,12 @@ load_high_quality_rainfall <- function(db_connection, tar_filename = NULL,
       sprintf('prcphq.%06d.daily.txt', site_number)
     )
 
-    raw_data <- utils::read.fwf(rainfall_filename, skip = 1, widths = c(9, 9))
+    raw_data <- utils::read.fwf(
+      rainfall_filename,
+      skip = 1,
+      widths = c(9, 9),
+      stringsAsFactors = FALSE
+    )
 
     year <- floor(raw_data[, 1] / 10000)
     month <- floor(raw_data[, 1] %% 10000 / 100)
