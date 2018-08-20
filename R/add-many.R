@@ -50,6 +50,10 @@ add_many_sites <- function(
       if (is.null(site)) {
         next
       }
+      if (inherits(site, 'try-error')) {
+        print(site)
+        stop('Site had error')
+      }
       DBI::dbBegin(db_connection)
       add_site(db_connection, site_data = site$site_data)
       add_daily_climate_data(
