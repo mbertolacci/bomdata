@@ -35,82 +35,53 @@ test_that(
 
 ## add_daily_climate_data
 
-run_rainfall_test <- function(load_site_fn) {
+run_add_climate_data_test <- function(add_site_fn, type) {
   with_db(function(db_connection) {
-    # Load rainfall into the database
-    expect_true(load_site_fn(db_connection))
+    expect_true(add_site_fn(db_connection))
 
     # Retrieve from the database
-    data <- DBI::dbGetQuery(db_connection, '
+    data <- DBI::dbGetQuery(db_connection, sprintf('
       SELECT
         *
       FROM
-        bom_rainfall
-      WHERE
-        site_number = 3003
-    ')
-    expect_equal(ncol(data), 5)
-    expect_true(nrow(data) >= 28345)
-    expect_is(data[, 'rainfall'], 'numeric')
-  })
-}
-
-test_that(
-  'add_daily_climate_data for rainfall, site_number variant',
-  run_rainfall_test(function(db_connection) {
-    add_daily_climate_data(db_connection, 3003, type = 'rainfall')
-  })
-)
-
-test_that(
-  'add_daily_climate_data for rainfall, data variant',
-  run_rainfall_test(function(db_connection) {
-    data <- download_daily_climate_data(3003, type = 'rainfall')
-    add_daily_climate_data(
-      db_connection,
-      3003,
-      data = data,
-      type = 'rainfall'
-    )
-  })
-)
-
-run_max_temperature_test <- function(load_site_fn) {
-  with_db(function(db_connection) {
-    # Load max_temperature into the database
-    expect_true(load_site_fn(db_connection))
-
-    # Retrieve from the database
-    data <- DBI::dbGetQuery(db_connection, '
-      SELECT
-        *
-      FROM
-        bom_max_temperature
+        bom_%s
       WHERE
         site_number = 9519
-    ')
+    ', type))
     expect_equal(ncol(data), 5)
-    expect_true(nrow(data) >= 22511)
-    expect_is(data[, 'max_temperature'], 'numeric')
+    expect_true(nrow(data) >= c(
+      'rainfall' = 40777,
+      'max_temperature' = 22511,
+      'min_temperature' = 22511,
+      'solar_exposure' = 10460
+    )[type])
+    expect_is(data[, type], 'numeric')
   })
 }
 
-test_that(
-  'add_daily_climate_data for max_temperature, site_number variant',
-  run_max_temperature_test(function(db_connection) {
-    add_daily_climate_data(db_connection, 9519, type = 'max_temperature')
-  })
-)
+for (type in c(
+  'rainfall',
+  'max_temperature',
+  'min_temperature',
+  'solar_exposure'
+)) {
+  test_that(
+    sprintf('add_daily_climate_data for %s, site_number variant', type),
+    run_add_climate_data_test(function(db_connection) {
+      add_daily_climate_data(db_connection, 9519, type = type)
+    }, type)
+  )
 
-test_that(
-  'add_daily_climate_data for max_temperature, data variant',
-  run_max_temperature_test(function(db_connection) {
-    data <- download_daily_climate_data(9519, type = 'max_temperature')
-    add_daily_climate_data(
-      db_connection,
-      9519,
-      data = data,
-      type = 'max_temperature'
-    )
-  })
-)
+  test_that(
+    sprintf('add_daily_climate_data for %s, data variant', type),
+    run_add_climate_data_test(function(db_connection) {
+      data <- download_daily_climate_data(9519, type = type)
+      add_daily_climate_data(
+        db_connection,
+        9519,
+        data = data,
+        type = type
+      )
+    }, type)
+  )
+}

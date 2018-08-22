@@ -20,7 +20,7 @@ EMPTY_SITE_DATA_FRAME <- data.frame(
 #' @export
 download_site <- function(
   site_numbers,
-  type = c('rainfall', 'max_temperature')
+  type = c('rainfall', 'max_temperature', 'min_temperature', 'solar_exposure')
 ) {
   type <- match.arg(type)
 
@@ -79,7 +79,7 @@ REGION_LIST_URL <- (
 #' @export
 get_site_numbers_in_region <- function(
   region_name = c('AUS', 'WA', 'SA', 'VIC', 'NSW', 'NT', 'QLD', 'TAS', 'ANT'),
-  type = c('rainfall', 'max_temperature')
+  type = c('rainfall', 'max_temperature', 'min_temperature', 'solar_exposure')
 ) {
   region_name <- match.arg(region_name)
   type <- match.arg(type)
@@ -175,7 +175,8 @@ get_site <- function(db_connection, site_number) {
 }
 
 .get_site_p_c <- function(
-  db_connection, site_number, type = c('rainfall', 'max_temperature')
+  db_connection, site_number,
+  type = c('rainfall', 'max_temperature', 'min_temperature', 'solar_exposure')
 ) {
   type <- match.arg(type)
   DBI::dbGetQuery(

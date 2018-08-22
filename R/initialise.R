@@ -38,7 +38,12 @@ initialise_db <- function(db_connection) {
       bom_site_p_c(site_number, type);
   ')
 
-  for (type in c('rainfall', 'max_temperature')) {
+  for (type in c(
+    'rainfall',
+    'max_temperature',
+    'min_temperature',
+    'solar_exposure'
+  )) {
     DBI::dbExecute(db_connection, sprintf('
       CREATE TABLE IF NOT EXISTS bom_%1$s(
         site_number INTEGER,    -- The site_number of the corresponding

@@ -22,7 +22,7 @@ EMPTY_DAILY_CLIMATE_DATA_FRAME <- data.frame(
 #' @export
 download_daily_climate_data <- function(
   site_number,
-  type = c('rainfall', 'max_temperature'),
+  type = c('rainfall', 'max_temperature', 'min_temperature', 'solar_exposure'),
   p_c = NULL
 ) {
   type <- match.arg(type)
@@ -64,7 +64,11 @@ download_daily_climate_data <- function(
   }
   data <- utils::read.csv(text = paste0(data_lines, collapse = '\n'))
 
-  data <- data[, 3 : 8]
+  if (type == 'solar_exposure') {
+    data <- cbind(data[, 3 : 6], NA, NA)
+  } else {
+    data <- data[, 3 : 8]
+  }
   colnames(data) <- c(
     'year', 'month', 'day', type, 'days_measured', 'quality'
   )
@@ -93,7 +97,7 @@ add_daily_climate_data <- function(
   db_connection,
   site_number,
   data,
-  type = c('rainfall', 'max_temperature'),
+  type = c('rainfall', 'max_temperature', 'min_temperature', 'solar_exposure'),
   ...
 ) {
   type <- match.arg(type)

@@ -11,7 +11,8 @@
 #' data to the database.
 #' @export
 add_many_sites <- function(
-  db_connection, site_numbers, type = c('rainfall', 'max_temperature'),
+  db_connection, site_numbers,
+  type = c('rainfall', 'max_temperature', 'min_temperature', 'solar_exposure'),
   n_parallel = 8, batch_size = 40
 ) {
   site_numbers <- strtoi(site_numbers)
