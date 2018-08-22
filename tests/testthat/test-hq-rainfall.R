@@ -7,8 +7,6 @@ futile.logger::flog.threshold(futile.logger::ERROR, name = 'bomdata')
 test_that(
   'add_high_quality_rainfall loads data',
   with_db(function(db_connection) {
-    skip('Test takes a very long time')
-
     # NOTE(mgnb): this test is slow and that's annoying
     add_high_quality_rainfall(db_connection)
 
