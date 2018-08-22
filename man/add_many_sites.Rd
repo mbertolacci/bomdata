@@ -5,7 +5,8 @@
 \title{Load many sites into a database in parallel.}
 \usage{
 add_many_sites(db_connection, site_numbers, type = c("rainfall",
-  "max_temperature"), n_parallel = 8, batch_size = 40)
+  "max_temperature", "min_temperature", "solar_exposure"), n_parallel = 8,
+  batch_size = 40)
 }
 \arguments{
 \item{db_connection}{A connection to an initialised bomdata database.}

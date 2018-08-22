@@ -5,7 +5,7 @@
 \title{Daily climate data for a site.}
 \usage{
 download_daily_climate_data(site_number, type = c("rainfall",
-  "max_temperature"), p_c = NULL)
+  "max_temperature", "min_temperature", "solar_exposure"), p_c = NULL)
 }
 \arguments{
 \item{site_number}{Integer number of site for which to download data.}

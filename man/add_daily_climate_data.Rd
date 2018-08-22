@@ -5,7 +5,7 @@
 \title{Add daily climate data to a database.}
 \usage{
 add_daily_climate_data(db_connection, site_number, data, type = c("rainfall",
-  "max_temperature"), ...)
+  "max_temperature", "min_temperature", "solar_exposure"), ...)
 }
 \arguments{
 \item{db_connection}{The database connection to an initialised bomdata

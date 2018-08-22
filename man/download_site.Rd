@@ -5,7 +5,8 @@
 \title{Get the site data (ie, metadata) from the BOM website as a data.frame with a
 single row.}
 \usage{
-download_site(site_numbers, type = c("rainfall", "max_temperature"))
+download_site(site_numbers, type = c("rainfall", "max_temperature",
+  "min_temperature", "solar_exposure"))
 }
 \arguments{
 \item{site_numbers}{The site number to retrieve.}

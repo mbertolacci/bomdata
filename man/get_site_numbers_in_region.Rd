@@ -5,7 +5,8 @@
 \title{Get a vector of site numbers in a specified region.}
 \usage{
 get_site_numbers_in_region(region_name = c("AUS", "WA", "SA", "VIC", "NSW",
-  "NT", "QLD", "TAS", "ANT"), type = c("rainfall", "max_temperature"))
+  "NT", "QLD", "TAS", "ANT"), type = c("rainfall", "max_temperature",
+  "min_temperature", "solar_exposure"))
 }
 \arguments{
 \item{region_name}{One of 'AUS', 'WA', 'SA', 'VIC', 'NSW', 'NT', 'QLD',
